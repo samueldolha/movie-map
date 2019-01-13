@@ -1,4 +1,7 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import RangeSlider from './components/RangeSlider';
 
-ReactDOM.render(<div>Hello, World!</div>, document.getElementById('root'))
+ReactDOM.render(
+    <RangeSlider minimumValue={1950} maximumValue={2000} initialValue={1984} />,
+    document.getElementById('root'));
