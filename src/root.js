@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RangeSlider from './components/RangeSlider';
+import MapContainer from './components/MapContainer';
 
 ReactDOM.render(
-    <RangeSlider minimumValue={1950} maximumValue={2000} initialValue={1984} />,
+    <MapContainer minimumYear={1950} maximumYear={2000} initialYear={1984} />,
     document.getElementById('root'));
