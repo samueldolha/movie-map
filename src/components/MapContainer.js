@@ -1,5 +1,6 @@
 import React from 'react';
 import RangeSlider from './RangeSlider';
+import MapView from './MapView';
 
 export default class extends React.Component {
     constructor(props) {
@@ -16,12 +17,15 @@ export default class extends React.Component {
 
     render() {
         return (
-            <RangeSlider
-                minimumValue={this.props.minimumYear}
-                maximumValue={this.props.maximumYear}
-                currentValue={this.state.year}
-                onChange={this.handleYearChange}
-            />
+            <div>
+                <MapView/>
+                <RangeSlider
+                    minimumValue={this.props.minimumYear}
+                    maximumValue={this.props.maximumYear}
+                    currentValue={this.state.year}
+                    onChange={this.handleYearChange}
+                />
+            </div>
         );
     }
-}
+};
