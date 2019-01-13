@@ -1,8 +1,7 @@
+import axios from 'axios';
 import React from 'react';
 import { GeoJSON, Map, TileLayer } from 'react-leaflet';
 import countryData from '../countries.json';
-
-const data = { 1975: { Canada: .6 } }
 
 const getColor = (intensity) => {
     if (intensity > 1) {
@@ -36,32 +35,92 @@ const getColor = (intensity) => {
     return '#FFEDA0';
 }
 
-const getStyle = (feature) => ({
-    fillColor: getColor(data['1975'][feature.properties.ADMIN]),
-    weight: 2,
-    opacity: 1,
-    color: 'white',
-    dashArray: '3',
-    fillOpacity: 0.7
-});
-
 export default class extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { latitude: 0, longitude: 0, zoom: 1 };
+        this.getStyle = this.getStyle.bind(this);
+        this.state = {
+            latitude: 0,
+            longitude: 0,
+            zoom: 1,
+            data: null
+        };
+    }
+
+    getStyle(feature) {
+        const yearData = this.state.data[this.props.year];
+
+        return {
+            fillColor: getColor(yearData && yearData[feature.properties.ADMIN] || 0),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        }
+    }
+
+    componentDidMount() {
+        axios.get('http://localhost:8000/api/map').then((response) => {
+            const data = {};
+
+            for (let row of response.data) {
+                const { pubYear, country } = row;
+
+                if (!data[pubYear]) {
+                    data[pubYear] = {};
+                }
+
+                if (!data[pubYear][country]) {
+                    data[pubYear][country] = 0;
+                }
+
+                data[pubYear][country] += 1;
+            }
+
+            for (let year in data) {
+                for (let country in data[year]) {
+                    data[year][country] = Math.log(data[year][country]);
+                }
+            }
+
+            for (let year in data) {
+                let maximum = -1;
+    
+                for (let country in data[year]) {
+                    if (maximum === -1 || data[year][country] > maximum) {
+                        maximum = data[year][country];
+                    }
+                }
+
+                for (let country in data[year]) {
+                    data[year][country] = data[year][country] / maximum;
+                }
+            }
+
+            this.setState({ data });
+        });
     }
 
     render() {
+        if (this.state.data === null) {
+            return (
+                <div style={{ height: 400 }}>
+                    Loading Map...
+                </div>
+            );
+        }
+
         return (
             <Map center={[this.state.latitude, this.state.longitude]} zoom={this.state.zoom}>
                 <TileLayer
-                    attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    attribution='World map &amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <GeoJSON
-                    attribution='&amp;copy <a href="https://datahub.io/core/geo-countries">Country GeoJSON</a>'
+                    attribution='GeoJSON &amp;copy Natural Earth <a href="https://datahub.io/core/geo-countries">via Datahub</a>'
                     data={countryData}
-                    style={getStyle}
+                    style={this.getStyle}
                 />
             </Map>
           );

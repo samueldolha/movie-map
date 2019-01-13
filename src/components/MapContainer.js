@@ -18,7 +18,7 @@ export default class extends React.Component {
     render() {
         return (
             <div>
-                <MapView/>
+                <MapView year={this.state.year} />
                 <RangeSlider
                     minimumValue={this.props.minimumYear}
                     maximumValue={this.props.maximumYear}

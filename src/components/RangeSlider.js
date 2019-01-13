@@ -2,7 +2,6 @@ import React from 'react';
 
 export default (props) => (
     <div>
-        <div>{props.currentValue}</div>
         <input
             type="range"
             min={props.minimumValue}
@@ -10,5 +9,6 @@ export default (props) => (
             value={props.currentValue}
             onChange={props.onChange}
         />
+        <div>{props.currentValue}</div>
     </div>
 );
