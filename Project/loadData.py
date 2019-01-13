@@ -1,6 +1,13 @@
 import sqlite3
 import sys, os, csv
 
+distinctmovies = '''
+    select count(*), country from (select distinct title, country from moviedata) group by country;
+'''
+
+distinctgenres = '''
+    select genre, count(*), country from (select distinct title, country, genre from moviedata) group by country;
+'''
 
 def buildTable(conn):
     tsvFile="data.tsv"
