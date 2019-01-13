@@ -18,7 +18,9 @@
   },
   "dependencies": {
     "babel-loader": "^7.1.5",
+    "leaflet": "^1.4.0",
     "react": "^16.7.0",
-    "react-dom": "^16.7.0"
+    "react-dom": "^16.7.0",
+    "react-leaflet": "^2.2.0"
   }
 }
